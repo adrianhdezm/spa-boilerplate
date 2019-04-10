@@ -1,0 +1,20 @@
+{
+  "name": "spa-boilerplate",
+  "version": "0.1.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adrianhdezm/spa-boilerplate.git"
+  },
+  "keywords": [
+    "react",
+    "spa",
+    "typescript"
+  ],
+  "author": "Adrian Hernandez-Mendez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adrianhdezm/spa-boilerplate/issues"
+  },
+  "homepage": "https://github.com/adrianhdezm/spa-boilerplate#readme"
+}
