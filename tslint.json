@@ -1,13 +1,26 @@
 {
   "defaultSeverity": "error",
-  "extends": ["tslint:recommended", "tslint-react"],
+  "extends": ["tslint:latest", "tslint-config-prettier", "tslint-react"],
   "jsRules": {},
   "rules": {
     "quotemark": [true, "single", "jsx-double"],
     "indent": [true, "spaces", 2],
     "member-access": [true, "no-public"],
     "trailing-comma": false,
-    "ordered-imports": false
+    "ordered-imports": false,
+    "no-implicit-dependencies": [true, ["@app", "@assets", "@ui"]],
+    "no-submodule-imports": [
+      true,
+      "core-js/es",
+      "react-dom",
+      "@app",
+      "@assets",
+      "@ui",
+      "raf/polyfill"
+    ],
+    "object-literal-key-quotes": [true, "consistent"],
+    "no-console": false,
+    "object-literal-sort-keys": false
   },
   "rulesDirectory": [],
   "linterOptions": {
