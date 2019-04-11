@@ -1,0 +1,16 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended", "tslint-react"],
+  "jsRules": {},
+  "rules": {
+    "quotemark": [true, "single", "jsx-double"],
+    "indent": [true, "spaces", 2],
+    "member-access": [true, "no-public"],
+    "trailing-comma": false,
+    "ordered-imports": false
+  },
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": ["**/node_modules/**"]
+  }
+}
