@@ -11,8 +11,7 @@ module.exports = {
   moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'tsx', 'svg'],
   moduleNameMapper: {
     '@app/(.*)': '<rootDir>/src/$1',
-    '@assets/(.*)': '<rootDir>/src/assets/$1',
-    '@ui/(.*)': '<rootDir>/src/ui-components/$1'
+    '@assets/(.*)': '<rootDir>/src/assets/$1'
   },
 
   // The directory where Jest should output its coverage files

@@ -1,10 +1,19 @@
 import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
+import { Dispatch } from 'redux';
 
-import { logout } from '@app/services/auth';
-import LogoutPage from '@ui/LogoutPage';
+import LogoutPage from '@app/components/LogoutPage';
+import { logout as logoutAction } from '@app/store/user/actions';
+import { AuthActionTypes } from '@app/store/user/models';
 
-const LogoutView: React.FC<RouteComponentProps<{}>> = () => {
+interface IDispatchProps {
+  logout: () => void;
+}
+
+type LogoutViewProps = RouteComponentProps<{}> & IDispatchProps;
+
+const LogoutView: React.FC<LogoutViewProps> = ({ logout }) => {
   useEffect(() => {
     logout();
   });
@@ -12,4 +21,13 @@ const LogoutView: React.FC<RouteComponentProps<{}>> = () => {
   return <LogoutPage />;
 };
 
-export default LogoutView;
+function mapDispatchToProps(dispatch: Dispatch<AuthActionTypes>) {
+  return {
+    logout: () => dispatch(logoutAction())
+  };
+}
+
+export default connect<{}, IDispatchProps, RouteComponentProps<{}>>(
+  null,
+  mapDispatchToProps
+)(LogoutView);

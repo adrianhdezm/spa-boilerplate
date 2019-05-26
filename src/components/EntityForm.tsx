@@ -1,7 +1,7 @@
-import React from 'react';
 import { FormikProps } from 'formik';
+import React from 'react';
 
-import { IEntityAttributes } from '@app/models';
+import { IEntityAttributes } from '@app/store/entities/models';
 
 const EntityForm: React.FC<FormikProps<IEntityAttributes>> = ({
   handleSubmit,

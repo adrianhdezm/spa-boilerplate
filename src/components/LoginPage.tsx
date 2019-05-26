@@ -1,6 +1,7 @@
-import React from 'react';
 import { FormikProps } from 'formik';
-import { IUser } from '@app/models';
+import React from 'react';
+
+import { IUser } from '@app/store/user/models';
 
 const Login: React.FC<FormikProps<IUser>> = ({
   handleSubmit,

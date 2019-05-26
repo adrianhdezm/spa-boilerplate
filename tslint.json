@@ -8,15 +8,15 @@
     "member-access": [true, "no-public"],
     "trailing-comma": false,
     "ordered-imports": false,
-    "no-implicit-dependencies": [true, ["@app", "@assets", "@ui"]],
+    "no-implicit-dependencies": [true, ["@app", "@assets"]],
     "no-submodule-imports": [
       true,
       "core-js/es",
       "react-dom",
       "@app",
       "@assets",
-      "@ui",
-      "raf/polyfill"
+      "raf/polyfill",
+      "rxjs"
     ],
     "object-literal-key-quotes": [true, "consistent"],
     "no-console": false,

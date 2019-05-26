@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IEntity } from '@app/models';
+
+import { ENTITY_PREFIX_PATH } from '@app/constants';
+import { IEntity } from '@app/store/entities/models';
 
 const EntityList: React.FC<{ data: IEntity[]; onDelete: (id: string) => void }> = ({
   data,
@@ -16,14 +18,18 @@ const EntityList: React.FC<{ data: IEntity[]; onDelete: (id: string) => void }> 
     const handleClick = () => handleDelete(item.objectId);
     return (
       <div key={index}>
-        <Link to={`/${item.objectId}`}>{item.name}</Link>
+        <Link to={`${ENTITY_PREFIX_PATH}/${item.objectId}`}>{item.name}</Link>
         <button type="button" onClick={handleClick}>
           Delete
         </button>
       </div>
     );
   });
-  return <div>{items}</div>;
+  return (
+    <div>
+      <Link to={`${ENTITY_PREFIX_PATH}/create`}>Create</Link> {items}
+    </div>
+  );
 };
 
 export default EntityList;
