@@ -58,7 +58,8 @@ const EntityCreateView: React.FC<EntityCreateViewProps> = ({
   };
 
   const initialValues: IEntityAttributes = {
-    name: ''
+    name: '',
+    description: ''
   };
 
   return (

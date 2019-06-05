@@ -21,6 +21,14 @@ const EntityForm: React.FC<FormikProps<IEntityAttributes>> = ({
         name="name"
       />
       {errors.name && touched.name ? <div>{errors.name}</div> : null}
+      <input
+        type="text"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        value={values.description}
+        name="description"
+      />
+      {errors.description && touched.description ? <div>{errors.description}</div> : null}
       <button type="submit">Submit</button>
     </form>
   );
