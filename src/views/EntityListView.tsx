@@ -10,7 +10,7 @@ import {
   deleteEntityReset,
   deleteEntityStart
 } from '@app/store/entities/operations/delete/actions';
-import { listEntitiesStart } from '@app/store/entities/operations/list/actions';
+import { listEntitiesStart, listMoreEntities } from '@app/store/entities/operations/list/actions';
 import { IAppState } from '@app/store/models';
 import { getEntities as getEntitiesSelector } from '@app/store/selectors';
 
@@ -24,6 +24,7 @@ interface IDispatchProps {
   deleteEntity: (id: string) => void;
   fetchEntities: () => void;
   resetActionData: () => void;
+  fetchMoreEntities: () => void;
 }
 
 type EntityListViewProps = RouteComponentProps<{}> & IStateProps & IDispatchProps;
@@ -35,6 +36,7 @@ const EntityListView: React.FC<EntityListViewProps> = ({
   fetchEntities,
   resetActionData,
   itemIsDeleted,
+  fetchMoreEntities,
   error
 }) => {
   const handleDelete = (objectId: string) => {
@@ -53,7 +55,7 @@ const EntityListView: React.FC<EntityListViewProps> = ({
 
   return (
     <Page loading={isLoading || !data}>
-      <EntityList data={data} onDelete={handleDelete} />
+      <EntityList data={data} onDelete={handleDelete} onLoadMore={fetchMoreEntities} />
     </Page>
   );
 };
@@ -74,7 +76,8 @@ function mapDispatchToProps(dispatch: Dispatch<EntityActionTypes>) {
   return {
     deleteEntity: (id: string) => dispatch(deleteEntityStart(id)),
     fetchEntities: () => dispatch(listEntitiesStart()),
-    resetActionData: () => dispatch(deleteEntityReset())
+    resetActionData: () => dispatch(deleteEntityReset()),
+    fetchMoreEntities: () => dispatch(listMoreEntities())
   };
 }
 

@@ -6,8 +6,13 @@ import { IEntity } from '@app/store/entities/models';
 
 const EntityDetails: React.FC<{ data: IEntity }> = ({ data }) => (
   <div>
-    {data.name}
-    <Link to={`${ENTITY_PREFIX_PATH}/${data.objectId}/edit`}>Edit</Link>
+    <h2>
+      {data.name} | <Link to={`${ENTITY_PREFIX_PATH}/${data.objectId}/edit`}>Edit</Link>
+    </h2>
+    <p>
+      created: {data.createdAt} | updated: {data.updatedAt}
+    </p>
+    <p>{data.description}</p>
   </div>
 );
 

@@ -21,6 +21,7 @@ import {
 
 export interface IEntityAttributes {
   name: string;
+  description: string;
 }
 
 export interface IEntity extends IEntityAttributes {

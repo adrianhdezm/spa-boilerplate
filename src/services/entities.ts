@@ -1,9 +1,9 @@
 import { getApiBaseUrl } from '@app/services/location';
 import { IEntity, IEntityAttributes } from '@app/store/entities/models';
 
-export const fetchEntities = async (): Promise<IEntity[]> => {
+export const fetchEntities = async (cursor: number = 0, limit: number = 20): Promise<IEntity[]> => {
   try {
-    const url = `${getApiBaseUrl()}/entities`;
+    const url = `${getApiBaseUrl()}/entities?_start=${cursor}&_limit=${limit}`;
     const response = await fetch(url);
     if (!response.ok) {
       throw Error(response.statusText);
