@@ -65,15 +65,6 @@ module.exports = (env) => {
             ]
           },
           {
-            test: /\.html$/,
-            loader: 'html-loader',
-            options: {
-              minimize: true,
-              removeComments: false,
-              collapseWhitespace: false
-            }
-          },
-          {
             test: /\.css$/,
             use: [
               isProdEnv && MiniCssExtractPlugin.loader,
@@ -149,30 +140,11 @@ module.exports = (env) => {
               NODE_ENV: JSON.stringify('production')
             }
           }),
-        new HtmlWebpackPlugin(
-          Object.assign(
-            {},
-            {
-              template: HTML_TEMPLATE_PATH,
-              inject: true,
-              favicon: FAVICON_PATH
-            },
-            isProdEnv
-              ? {
-                  removeComments: true,
-                  collapseWhitespace: true,
-                  removeRedundantAttributes: true,
-                  useShortDoctype: true,
-                  removeEmptyAttributes: true,
-                  removeStyleLinkTypeAttributes: true,
-                  keepClosingSlash: true,
-                  minifyJS: true,
-                  minifyCSS: true,
-                  minifyURLs: true
-                }
-              : undefined
-          )
-        ),
+        new HtmlWebpackPlugin({
+          template: HTML_TEMPLATE_PATH,
+          inject: true,
+          favicon: FAVICON_PATH
+        }),
         shouldRunBundleAnalysis && new BundleAnalyzerPlugin()
       ].filter(Boolean)
     },
