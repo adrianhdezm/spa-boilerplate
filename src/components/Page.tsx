@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import Logo from '@assets/images/logo.svg';
-import Loading from '@ui/Loading';
-
+import Loading from '@app/components/Loading';
 import { HOME_ROUTE_PATH, LOGOUT_ROUTE_PATH } from '@app/constants';
+import Logo from '@assets/images/logo.svg';
 
 const Page: React.FC<{ loading?: boolean }> = ({ children, loading }) => (
   <div>

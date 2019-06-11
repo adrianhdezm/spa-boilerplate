@@ -1,8 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-
 import '@assets/reset.css';
 
-import App from '@app/App';
+import { ConnectedRouter } from 'connected-react-router';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 
-ReactDOM.render(<App />, document.getElementById('app'));
+import App from '@app/App';
+import { loadState, saveState } from '@app/services/localStorare';
+import { configureStore, history } from '@app/store/configureStore';
+
+const persistedState = loadState();
+
+const store = configureStore(persistedState);
+store.subscribe(() => {
+  const state = store.getState();
+  saveState(state.user);
+});
+
+/* tslint:disable:jsx-wrap-multiline */
+ReactDOM.render(
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+      <App />
+    </ConnectedRouter>
+  </Provider>,
+  document.getElementById('app')
+);

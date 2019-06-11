@@ -7,9 +7,12 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "downlevelIteration": true,
     "lib": ["es2015", "dom"],
     "noEmit": true,
+    "strict": true,
     "noImplicitAny": true,
+    "alwaysStrict": true,
     "jsx": "react",
     "esModuleInterop": true,
     "suppressImplicitAnyIndexErrors": true,
@@ -17,8 +20,7 @@
     "baseUrl": ".",
     "paths": {
       "@assets/*": ["src/assets/*"],
-      "@app/*": ["src/*"],
-      "@ui/*": ["src/ui-components/*"]
+      "@app/*": ["src/*"]
     }
   },
   "include": ["src/**/*"],

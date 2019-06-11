@@ -1,29 +1,87 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
+import { Dispatch } from 'redux';
 
-import { IEntity } from '@app/models';
-import { fetchEntities, deleteEntity } from '@app/services/entities';
-import { useData } from '@app/hooks';
-import Page from '@ui/Page';
-import EntityList from '@ui/EntityList';
+import EntityList from '@app/components/EntityList';
+import Page from '@app/components/Page';
+import { EntityActionTypes, IEntity } from '@app/store/entities/models';
+import {
+  deleteEntityReset,
+  deleteEntityStart
+} from '@app/store/entities/operations/delete/actions';
+import { listEntitiesStart, listMoreEntities } from '@app/store/entities/operations/list/actions';
+import { IAppState } from '@app/store/models';
+import { getEntities as getEntitiesSelector } from '@app/store/selectors';
 
-const EntityListView: React.FC<RouteComponentProps<{}>> = () => {
-  const { data, setData, setError, isLoading } = useData(fetchEntities, '/');
+interface IStateProps {
+  data: IEntity[];
+  isLoading: boolean;
+  itemIsDeleted: boolean;
+  error: Error;
+}
+interface IDispatchProps {
+  deleteEntity: (id: string) => void;
+  fetchEntities: () => void;
+  resetActionData: () => void;
+  fetchMoreEntities: () => void;
+}
 
-  const handleDelete = async (objectId: string) => {
-    try {
-      await deleteEntity(objectId);
-      setData(data.filter((entity: IEntity) => entity.objectId !== objectId));
-    } catch (error) {
-      setError(error);
-    }
+type EntityListViewProps = RouteComponentProps<{}> & IStateProps & IDispatchProps;
+
+const EntityListView: React.FC<EntityListViewProps> = ({
+  data,
+  isLoading,
+  deleteEntity,
+  fetchEntities,
+  resetActionData,
+  itemIsDeleted,
+  fetchMoreEntities,
+  error
+}) => {
+  const handleDelete = (objectId: string) => {
+    deleteEntity(objectId);
   };
+
+  useEffect(() => {
+    fetchEntities();
+  }, []);
+
+  useEffect(() => {
+    if (itemIsDeleted && !error) {
+      resetActionData();
+    }
+  }, [itemIsDeleted]);
 
   return (
     <Page loading={isLoading || !data}>
-      <EntityList data={data} onDelete={handleDelete} />
+      <EntityList data={data} onDelete={handleDelete} onLoadMore={fetchMoreEntities} />
     </Page>
   );
 };
 
-export default EntityListView;
+function mapStateToProps(state: IAppState) {
+  const { pending } = state.entities.operations.list;
+  const { isSuccess: itemIsDeleted, error } = state.entities.operations.delete;
+
+  return {
+    data: getEntitiesSelector(state),
+    isLoading: pending,
+    itemIsDeleted,
+    error
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<EntityActionTypes>) {
+  return {
+    deleteEntity: (id: string) => dispatch(deleteEntityStart(id)),
+    fetchEntities: () => dispatch(listEntitiesStart()),
+    resetActionData: () => dispatch(deleteEntityReset()),
+    fetchMoreEntities: () => dispatch(listMoreEntities())
+  };
+}
+
+export default connect<IStateProps, IDispatchProps, RouteComponentProps<{}>>(
+  mapStateToProps,
+  mapDispatchToProps
+)(EntityListView);

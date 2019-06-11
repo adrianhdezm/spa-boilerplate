@@ -1,28 +1,24 @@
 import { getApiBaseUrl } from '@app/services/location';
 
-export const login = async (username: string, password: string) => {
+export const login = async (username: string, password: string): Promise<string> => {
   try {
     const apiUrl = getApiBaseUrl();
-    const responce = await fetch(`${apiUrl}/login`, {
+    const response = await fetch(`${apiUrl}/login`, {
       body: JSON.stringify({ username, password }),
       headers: {
         'Content-Type': 'application/json'
       },
       method: 'POST'
     });
-    const { sessionToken } = await responce.json();
-    if (typeof sessionToken !== 'undefined' && sessionToken) {
-      window.sessionStorage.setItem('token', sessionToken);
-      return true;
+    if (!response.ok) {
+      throw Error(response.statusText);
     }
-    return false;
+    const { sessionToken } = await response.json();
+    return sessionToken;
   } catch (error) {
-    throw new Error('Failed to connect with the authorization server');
+    if (!error.message) {
+      throw new Error('Failed to connect with the authorization server');
+    }
+    throw error;
   }
-};
-
-export const isAuthenticated = () => !!window.sessionStorage.getItem('token');
-
-export const logout = () => {
-  window.sessionStorage.removeItem('token');
 };
