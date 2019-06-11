@@ -21,7 +21,7 @@ const reducer: Reducer<IEntity[], EntityActionTypes> = (state = [], action) => {
     }
     case LIST_ENTITIES_SUCCESS: {
       const { entities } = action.payload;
-      return [...state, ...entities].reduce((unique, entity) => {
+      return [...state, ...entities].reduce((unique: IEntity[], entity) => {
         if (!unique.find(({ objectId }) => objectId === entity.objectId)) {
           unique.push(entity);
         }

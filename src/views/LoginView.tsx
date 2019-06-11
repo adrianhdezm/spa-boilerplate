@@ -53,7 +53,7 @@ const LoginView: React.FC<LoginViewProps> = ({
   };
 
   useEffect(() => {
-    if (networkError) {
+    if (networkError && formikRef.current) {
       formikRef.current.setErrors({
         username: networkError.message
       });

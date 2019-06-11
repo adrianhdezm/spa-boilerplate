@@ -2,7 +2,7 @@ import { IEntitiesState } from '@app/store/entities/models';
 import { IUserState } from '@app/store/user/models';
 
 export interface IAppState {
-  entities?: IEntitiesState;
+  entities: IEntitiesState;
   user: IUserState;
 }
 

@@ -47,7 +47,7 @@ const EntityEditView: React.FC<EntityEditViewProps> = ({
   }, [match.params.id]);
 
   useEffect(() => {
-    if (error) {
+    if (error && formikRef.current) {
       formikRef.current.setErrors({
         name: error.message
       });
@@ -71,7 +71,7 @@ const EntityEditView: React.FC<EntityEditViewProps> = ({
 
   const mapAttributesToValues = (attrs: IEntity) => {
     if (!attrs) {
-      return {};
+      return { name: '', description: '' };
     }
     const { objectId, createdAt, updatedAt, ...values } = attrs;
     return values;

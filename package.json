@@ -20,10 +20,10 @@
   "scripts": {
     "e2e": "jest --config=config/jest/jest.config.e2e.js --detectOpenHandles --forceExit",
     "test": "jest --config=config/jest/jest.config.js --passWithNoTests",
-    "build": "webpack --config config/webpack.config.js --env.production",
-    "start": "webpack-dev-server --config config/webpack.config.js --env.development",
+    "build": "npm run format && webpack --env.production",
+    "start": "webpack-dev-server --env.development",
     "fake-data-server": "node config/jsonServer/start.js",
-    "bundle-analyzer": "webpack --config config/webpack.config.js --env.production --env.analysis",
+    "bundle-analyzer": "webpack --env.production --env.analysis",
     "format": "prettier --write '{src,e2e,config}/**/*.{js,ts,tsx,json,html,css}' 'README.md'"
   },
   "devDependencies": {

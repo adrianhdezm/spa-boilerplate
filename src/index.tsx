@@ -13,8 +13,8 @@ const persistedState = loadState();
 
 const store = configureStore(persistedState);
 store.subscribe(() => {
-  const { user } = store.getState();
-  saveState({ user });
+  const state = store.getState();
+  saveState(state.user);
 });
 
 /* tslint:disable:jsx-wrap-multiline */

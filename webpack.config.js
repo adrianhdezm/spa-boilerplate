@@ -20,7 +20,7 @@ const {
   APPLICATION_ENTRY_PATH,
   OUTPUT_IMAGES_FOLDER,
   OUTPUT_STYLES_FOLDER
-} = require('./paths');
+} = require('./config/paths');
 
 const HOST = process.env.HOST || 'localhost';
 const PORT = parseInt(process.env.PORT, 10) || 8080;
@@ -28,12 +28,13 @@ const PORT = parseInt(process.env.PORT, 10) || 8080;
 const openDevServer = process.platform === 'darwin' ? 'Google Chrome' : true;
 
 module.exports = (env) => {
-  const isProdEnv = env.production ? true : env.development ? false : undefined;
-  const shouldRunBundleAnalysis = env.production && env.analysis;
+  const isProd = env.production;
+  const shouldRunBundleAnalysis = isProd && env.analysis;
+  const outputHashType = isProd ? 'chunkhash:8' : 'hash:8';
 
   return Object.assign(
     {
-      mode: isProdEnv ? 'production' : 'development',
+      mode: isProd ? 'production' : env.development ? 'development' : 'none',
       resolve: {
         extensions: ['.tsx', '.ts', '.js'],
         plugins: [new TsconfigPathsPlugin()]
@@ -44,14 +45,12 @@ module.exports = (env) => {
       },
       output: {
         path: OUTPUT_PATH,
-        filename: `${OUTPUT_SCRIPTS_FOLDER}/[name].[${isProdEnv ? 'chunkhash' : 'hash'}:8].js`,
-        chunkFilename: `${OUTPUT_SCRIPTS_FOLDER}/[name].[${
-          isProdEnv ? 'chunkhash' : 'hash'
-        }:8].chunk.js`
+        filename: `${OUTPUT_SCRIPTS_FOLDER}/[name].[${outputHashType}].js`,
+        chunkFilename: `${OUTPUT_SCRIPTS_FOLDER}/[name].[${outputHashType}].chunk.js`
       },
-      devtool: isProdEnv ? 'source-map' : 'inline-source-map',
+      devtool: isProd ? 'source-map' : 'inline-source-map',
       // Don't attempt to continue if there are any errors in production.
-      bail: isProdEnv,
+      bail: isProd,
       module: {
         // Makes missing exports an error instead of warning
         strictExportPresence: true,
@@ -67,8 +66,8 @@ module.exports = (env) => {
           {
             test: /\.css$/,
             use: [
-              isProdEnv && MiniCssExtractPlugin.loader,
-              !isProdEnv && 'style-loader',
+              isProd && MiniCssExtractPlugin.loader,
+              !isProd && 'style-loader',
               'css-loader'
             ].filter(Boolean)
           },
@@ -86,7 +85,7 @@ module.exports = (env) => {
           }
         ]
       },
-      performance: isProdEnv
+      performance: isProd
         ? {
             hints: 'error',
             maxEntrypointSize: 1000000,
@@ -94,8 +93,8 @@ module.exports = (env) => {
           }
         : { hints: false },
       optimization: {
-        minimize: isProdEnv,
-        minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+        minimize: isProd,
+        minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin()],
         runtimeChunk: 'single',
         splitChunks: {
           cacheGroups: {
@@ -110,31 +109,25 @@ module.exports = (env) => {
       plugins: [
         new CleanWebpackPlugin(),
         new webpack.HashedModuleIdsPlugin(),
-        new ForkTsCheckerWebpackPlugin(
-          Object.assign(
-            {
-              async: false,
-              tslint: true,
-              memoryLimit: 4096,
-              silent: true
-            },
-            isProdEnv
-              ? { useTypescriptIncrementalApi: false }
-              : { useTypescriptIncrementalApi: true }
-          )
-        ),
-        !isProdEnv &&
+        new ForkTsCheckerWebpackPlugin({
+          async: false,
+          tslint: true,
+          memoryLimit: 4096,
+          silent: true,
+          useTypescriptIncrementalApi: true
+        }),
+        !isProd &&
           new ForkTsCheckerNotifierWebpackPlugin({
             title: 'TypeScript',
             excludeWarnings: false
           }),
-        isProdEnv &&
+        isProd &&
           new MiniCssExtractPlugin({
             filename: `${OUTPUT_STYLES_FOLDER}/[name].[contenthash:8].css`,
             chunkFilename: `${OUTPUT_STYLES_FOLDER}/[name].[contenthash:8].chunk.css`
           }),
-        !isProdEnv && new webpack.HotModuleReplacementPlugin(),
-        isProdEnv &&
+        !isProd && new webpack.HotModuleReplacementPlugin(),
+        isProd &&
           new webpack.DefinePlugin({
             'process.env': {
               NODE_ENV: JSON.stringify('production')
@@ -148,7 +141,7 @@ module.exports = (env) => {
         shouldRunBundleAnalysis && new BundleAnalyzerPlugin()
       ].filter(Boolean)
     },
-    !isProdEnv
+    !isProd
       ? {
           devServer: {
             // only dev

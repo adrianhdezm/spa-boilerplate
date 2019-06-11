@@ -37,7 +37,7 @@ const EntityCreateView: React.FC<EntityCreateViewProps> = ({
   const formikRef = useRef<Formik<IEntityAttributes>>();
 
   useEffect(() => {
-    if (error) {
+    if (error && formikRef.current) {
       formikRef.current.setErrors({
         name: error.message
       });
