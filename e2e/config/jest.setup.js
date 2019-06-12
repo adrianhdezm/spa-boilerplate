@@ -4,7 +4,7 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 
 const { startE2EServer, cleanE2EFolders } = require('./utils');
-const { E2E_TEMP_DIR_PATH, E2E_WS_PATH } = require('../../paths');
+const { E2E_TEMP_DIR_PATH, E2E_WS_PATH } = require('../../config/paths');
 
 module.exports = async function() {
   try {

@@ -7,8 +7,8 @@ const webpack = require('webpack');
 const express = require('express');
 const rimraf = require('rimraf');
 
-const config = require('../../../webpack.config');
-const { OUTPUT_PATH, E2E_TEMP_DIR_PATH } = require('../../paths');
+const config = require('../../webpack.config');
+const { OUTPUT_PATH, E2E_TEMP_DIR_PATH } = require('../../config/paths');
 
 const startE2EServer = () => {
   return new Promise((resolve, reject) => {

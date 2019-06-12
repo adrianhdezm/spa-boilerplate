@@ -4,7 +4,7 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const NodeEnvironment = require('jest-environment-node');
 
-const { E2E_WS_PATH } = require('../../paths');
+const { E2E_WS_PATH } = require('../../config/paths');
 class PuppeteerEnvironment extends NodeEnvironment {
   constructor(config) {
     super(config);

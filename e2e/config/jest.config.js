@@ -1,8 +1,8 @@
-const { PROJECT_ROOT_PATH } = require('../paths');
+const { PROJECT_ROOT_PATH } = require('../../config/paths');
 
-const GLOBAL_SETUP_PATH = '<rootDir>/config/jest/e2e/jest.setup';
-const GLOBAL_TEARDOWN_PATH = '<rootDir>/config/jest/e2e/jest.teardown';
-const TESTS_ENV_PATH = '<rootDir>/config/jest/e2e/puppeteer.env';
+const GLOBAL_SETUP_PATH = '<rootDir>/e2e/config/jest.setup';
+const GLOBAL_TEARDOWN_PATH = '<rootDir>/e2e/config/jest.teardown';
+const TESTS_ENV_PATH = '<rootDir>/e2e/config/puppeteer.env';
 
 module.exports = {
   // The root directory that Jest should scan for tests and modules within
