@@ -9,6 +9,11 @@
             "UnauthRoleName": "spa-boilerplate-develop-20190612214911-unauthRole",
             "StackName": "spa-boilerplate-develop-20190612214911",
             "StackId": "arn:aws:cloudformation:eu-central-1:734913741073:stack/spa-boilerplate-develop-20190612214911/263a2840-8d4b-11e9-ba96-0a62f85f92f4"
+        },
+        "categories": {
+            "auth": {
+                "spaboilerplatee9914e98": {}
+            }
         }
     }
 }
