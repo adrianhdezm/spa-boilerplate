@@ -89,7 +89,7 @@ module.exports = (env) => {
         ? {
             hints: 'error',
             maxEntrypointSize: 1000000,
-            maxAssetSize: 500000
+            maxAssetSize: 1500000
           }
         : { hints: false },
       optimization: {
