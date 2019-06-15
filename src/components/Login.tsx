@@ -1,6 +1,7 @@
 import { FormikProps } from 'formik';
 import React from 'react';
 
+import { AUTH_STEP_CONFIRM_SIGNIN, AUTH_STEP_NEW_PASSWORD, AUTH_STEP_SIGNIN } from '@app/constants';
 import { ILoginFormAttributes } from '@app/models';
 
 const Login: React.FC<FormikProps<ILoginFormAttributes>> = ({
@@ -12,68 +13,59 @@ const Login: React.FC<FormikProps<ILoginFormAttributes>> = ({
   touched,
   status
 }) => {
-  const loginFields =
-    status && status === 'signIn' ? (
-      <div>
-        <input
-          type="text"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          value={values.email}
-          name="email"
-        />
-        {errors.email && touched.email ? <div>{errors.email}</div> : null}
-        {status && status.email ? <div>{status.email}</div> : null}
-        <input
-          type="password"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          value={values.password}
-          name="password"
-        />
-        {errors.password && touched.password ? <div>{errors.password}</div> : null}
-        {status && status.password ? <div>{status.password}</div> : null}
-      </div>
-    ): null;
+  const FormState = {};
 
-  const passwordChallangeFiels =
-  status && status === 'completeNewPassword'? (
-      <div>
-        <input
-          type="password"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          value={values.newPassword}
-          name="newPassword"
-        />
-        {errors.newPassword && touched.newPassword ? <div>{errors.newPassword}</div> : null}
-        {status && status.newPassword ? <div>{status.newPassword}</div> : null}
-      </div>
-    ) : null;
-
-  const codeChallangeFiels =
-    status && status === 'confirmSignIn' ? (
-      <div>
-        <input
-          type="text"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          value={values.code}
-          name="code"
-        />
-        {errors.code && touched.code ? <div>{errors.code}</div> : null}
-        {status && status.code ? <div>{status.code}</div> : null}
-      </div>
-    ) : null;
-
-  return (
-    <form onSubmit={handleSubmit}>
-      {loginFields}
-      {passwordChallangeFiels}
-      {codeChallangeFiels}
+  FormState[AUTH_STEP_SIGNIN] = (
+    <>
+      <input
+        type="text"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        value={values.email}
+        name="email"
+      />
+      {errors.email && touched.email ? <div>{errors.email}</div> : null}
+      <input
+        type="password"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        value={values.password}
+        name="password"
+      />
+      {errors.password && touched.password ? <div>{errors.password}</div> : null}
       <button type="submit">Login</button>
-    </form>
+    </>
   );
+
+  FormState[AUTH_STEP_NEW_PASSWORD] = (
+    <>
+      <input
+        type="password"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        value={values.newPassword}
+        name="newPassword"
+      />
+      {errors.newPassword && touched.newPassword ? <div>{errors.newPassword}</div> : null}
+      <button type="submit">Change</button>
+    </>
+  );
+
+  FormState[AUTH_STEP_CONFIRM_SIGNIN] = (
+    <>
+      <input
+        type="text"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        value={values.code}
+        name="code"
+      />
+      {errors.code && touched.code ? <div>{errors.code}</div> : null}
+      <button type="submit">Send</button>
+    </>
+  );
+
+  return <form onSubmit={handleSubmit}>{FormState[status]}</form>;
 };
 
 export default Login;

@@ -3,15 +3,23 @@ import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import Login from '@app/components/Login';
-import { HOME_ROUTE_PATH } from '@app/constants';
+import {
+  AUTH_STEP_CONFIRM_SIGNIN,
+  AUTH_STEP_NEW_PASSWORD,
+  AUTH_STEP_SIGNIN,
+  HOME_ROUTE_PATH
+} from '@app/constants';
 import { ILoginFormAttributes } from '@app/models';
 import Auth, { CognitoUser } from '@aws-amplify/auth';
 
-const FORM_STATUS = ['signIn', 'confirmSignIn', 'completeNewPassword', 'error'];
-
 const LoginView: React.FC<RouteComponentProps<{}>> = ({ history, location }) => {
-  const [formStatus, setFormStatus] = useState<string>('signIn');
-  const [currentUser, setCurrentUser] = useState<CognitoUser | null>(null);
+  const [authState, setAuthState] = useState<{
+    step: string;
+    user: CognitoUser | null;
+  }>({
+    step: AUTH_STEP_SIGNIN,
+    user: null
+  });
 
   const initialValues: ILoginFormAttributes = {
     password: '',
@@ -29,32 +37,32 @@ const LoginView: React.FC<RouteComponentProps<{}>> = ({ history, location }) => 
     values: ILoginFormAttributes,
     actions: FormikActions<ILoginFormAttributes>
   ) => {
-    const { setStatus, setSubmitting } = actions;
+    const { setStatus, setErrors, setSubmitting } = actions;
     const { email, password, newPassword, code } = values;
 
     try {
-      if (formStatus === 'signIn') {
-        const user = await Auth.signIn(email, password);
-        setCurrentUser(user);
+      const { step, user } = authState;
+      if (step === AUTH_STEP_SIGNIN) {
+        const loggedUser = await Auth.signIn(email, password);
 
-        if (user.challengeName === 'SOFTWARE_TOKEN_MFA') {
-          setFormStatus('confirmSignIn');
-          setStatus('confirmSignIn');
+        if (loggedUser.challengeName === 'SOFTWARE_TOKEN_MFA') {
+          setAuthState({ step: AUTH_STEP_CONFIRM_SIGNIN, user: loggedUser });
+          setStatus(AUTH_STEP_CONFIRM_SIGNIN);
         }
 
-        if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
-          setFormStatus('completeNewPassword');
-          setStatus('completeNewPassword');
+        if (loggedUser.challengeName === 'NEW_PASSWORD_REQUIRED') {
+          setAuthState({ step: AUTH_STEP_NEW_PASSWORD, user: loggedUser });
+          setStatus(AUTH_STEP_NEW_PASSWORD);
         }
 
-        if (user && !user.challengeName) {
+        if (loggedUser && !loggedUser.challengeName) {
           redirect();
         }
       }
 
-      if (currentUser && formStatus === 'confirmSignIn') {
+      if (user && step === AUTH_STEP_CONFIRM_SIGNIN) {
         const loggedUser = await Auth.confirmSignIn(
-          currentUser, // Return object from Auth.signIn()
+          user, // Return object from Auth.signIn()
           code, // Confirmation code
           'SOFTWARE_TOKEN_MFA' // MFA Type e.g. SMS_MFA, SOFTWARE_TOKEN_MFA
         );
@@ -62,9 +70,9 @@ const LoginView: React.FC<RouteComponentProps<{}>> = ({ history, location }) => 
           redirect();
         }
       }
-      if (currentUser && formStatus === 'completeNewPassword') {
+      if (user && step === AUTH_STEP_NEW_PASSWORD) {
         const loggedUser = await Auth.completeNewPassword(
-          currentUser, // the Cognito User Object
+          user, // the Cognito User Object
           newPassword, // the new password
           {
             email
@@ -77,16 +85,15 @@ const LoginView: React.FC<RouteComponentProps<{}>> = ({ history, location }) => 
     } catch (error) {
       if (error.code === 'NotAuthorizedException') {
         // The error happens when the incorrect password is provided
-        setStatus({ error: { password: 'Incorrect password is provided' } });
+        setErrors({ password: 'Incorrect password is provided' });
       } else if (error.code === 'UserNotFoundException') {
         // The error happens when the supplied username/email does not exist in the Cognito user pool
-        setStatus({ error: { email: 'Supplied username does not exist' } });
+        setErrors({ email: 'Supplied username does not exist' });
+      } else if (error === 'Password cannot be empty') {
+        setErrors({ newPassword: 'New password cannot be empty' });
       } else {
         console.log(error);
       }
-
-      const { email: emailError, password: passwordError } = error;
-      setStatus({ email: emailError, password: passwordError });
     }
     setSubmitting(false);
   };
@@ -101,7 +108,7 @@ const LoginView: React.FC<RouteComponentProps<{}>> = ({ history, location }) => 
   return (
     <Formik
       initialValues={initialValues}
-      initialStatus={formStatus}
+      initialStatus={AUTH_STEP_SIGNIN}
       validate={validate}
       onSubmit={handleSubmit}
       render={Login}
