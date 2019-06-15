@@ -1,6 +1,6 @@
 import Auth from '@aws-amplify/auth';
 
-const isAuth = (negation: boolean) => {
+const isUserAuthenticated = (negation: boolean) => {
   return async () => {
     try {
       const user = await Auth.currentAuthenticatedUser({
@@ -18,5 +18,5 @@ const isAuth = (negation: boolean) => {
   };
 };
 
-export const isAuthenticated = isAuth(true);
-export const isNotAuthenticated = isAuth(false);
+export const isAuthenticated = isUserAuthenticated(true);
+export const isNotAuthenticated = isUserAuthenticated(false);
