@@ -9,14 +9,11 @@ import {
   AUTH_STEP_SIGNIN,
   HOME_ROUTE_PATH
 } from '@app/constants';
-import { ILoginFormAttributes } from '@app/models';
-import Auth, { CognitoUser } from '@aws-amplify/auth';
+import { ILoginFormAttributes, ILoginFormState } from '@app/models';
+import Auth from '@aws-amplify/auth';
 
 const LoginView: React.FC<RouteComponentProps<{}>> = ({ history, location }) => {
-  const [authState, setAuthState] = useState<{
-    step: string;
-    user: CognitoUser | null;
-  }>({
+  const [authState, setAuthState] = useState<ILoginFormState>({
     step: AUTH_STEP_SIGNIN,
     user: null
   });
