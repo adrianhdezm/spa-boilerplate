@@ -1,0 +1,12 @@
+projects:
+  entitiesApi:
+    schemaPath: src/services/api/graphql/schema.json
+    includes:
+      - src/services/api/graphql/**/*.ts
+    excludes:
+      - ./amplify/**
+    extensions:
+      amplify:
+        codeGenTarget: typescript
+        generatedFileName: src/services/api/models.ts
+        docsFilePath: src/services/api/graphql

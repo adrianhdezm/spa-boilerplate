@@ -1,0 +1,5 @@
+type Entity @model {
+  id: ID!
+  name: String!
+  description: String
+}

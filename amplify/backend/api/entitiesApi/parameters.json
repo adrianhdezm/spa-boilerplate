@@ -1,0 +1,10 @@
+{
+    "AppSyncApiName": "entitiesApi",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authspaboilerplatee9914e98",
+            "Outputs.UserPoolId"
+        ]
+    }
+}
