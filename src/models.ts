@@ -11,3 +11,9 @@ export interface ILoginFormState {
   step: string;
   user: CognitoUser | null;
 }
+
+export interface IEntity {
+  id: string;
+  name: string;
+  description: string | null;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 
 type ProtectedRouteProps = RouteProps & { canLoad: () => Promise<boolean>; fallback: string };
@@ -31,7 +31,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       mounted = false;
     };
   }, []);
-
 
   if (isAllowed === undefined) {
     return <Route render={undefined} />;
