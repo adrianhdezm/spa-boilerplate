@@ -14,6 +14,7 @@ import LoginView from '@app/views/LoginView';
 import LogoutView from '@app/views/LogoutView';
 import NotFoundView from '@app/views/NotFoundView';
 
+import EntityCreateView from './views/EntityCreateView';
 import EntityDetailsView from './views/EntityDetailsView';
 
 const App: React.FC<{}> = () => {
@@ -52,6 +53,13 @@ const App: React.FC<{}> = () => {
             canLoad={isAuthenticated}
           />
           <Route path={NOT_FOUND_PATH} component={NotFoundView} exact={true} />
+          <ProtectedRoute
+            key={`${HOME_ROUTE_PATH}create`}
+            path={`${HOME_ROUTE_PATH}create`}
+            component={EntityCreateView}
+            fallback={LOGIN_ROUTE_PATH}
+            canLoad={isAuthenticated}
+          />
           <ProtectedRoute
             key={`${HOME_ROUTE_PATH}:id`}
             path={`${HOME_ROUTE_PATH}:id`}

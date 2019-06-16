@@ -12,8 +12,11 @@ export interface ILoginFormState {
   user: CognitoUser | null;
 }
 
-export interface IEntity {
-  id: string;
+export interface IEntityAttributes {
   name: string;
-  description: string | null;
+  description?: string;
+}
+
+export interface IEntity extends IEntityAttributes {
+  id: string;
 }
