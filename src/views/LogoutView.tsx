@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+
+import Logout from '@app/components/Logout';
+import Auth from '@aws-amplify/auth';
 
 const LogoutView: React.FC<{}> = () => {
-  return <>This will be the LogoutView</>;
+  useEffect(() => {
+    Auth.signOut();
+  });
+
+  return <Logout />;
 };
 
 export default LogoutView;
