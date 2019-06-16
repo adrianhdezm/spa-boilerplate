@@ -5,9 +5,10 @@ import { IEntity } from '@app/models';
 
 const EntityList: React.FC<{ data: IEntity[] }> = ({ data }) => {
   const entities = data.map((item: IEntity, index: number) => (
-    <Link to={`/${item.id}`} key={index}>
-      {item.name}
-    </Link>
+    <div key={index}>
+      <Link to={`/${item.id}`}>{item.name}</Link>
+      <Link to={`/${item.id}/edit`}>Edit</Link>
+    </div>
   ));
   return <>{entities}</>;
 };

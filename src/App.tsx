@@ -16,6 +16,7 @@ import NotFoundView from '@app/views/NotFoundView';
 
 import EntityCreateView from './views/EntityCreateView';
 import EntityDetailsView from './views/EntityDetailsView';
+import EntityUpdateView from './views/EntityUpdateView';
 
 const App: React.FC<{}> = () => {
   useEffect(() => {
@@ -57,6 +58,13 @@ const App: React.FC<{}> = () => {
             key={`${HOME_ROUTE_PATH}create`}
             path={`${HOME_ROUTE_PATH}create`}
             component={EntityCreateView}
+            fallback={LOGIN_ROUTE_PATH}
+            canLoad={isAuthenticated}
+          />
+          <ProtectedRoute
+            key={`${HOME_ROUTE_PATH}:id/edit`}
+            path={`${HOME_ROUTE_PATH}:id/edit`}
+            component={EntityUpdateView}
             fallback={LOGIN_ROUTE_PATH}
             canLoad={isAuthenticated}
           />
