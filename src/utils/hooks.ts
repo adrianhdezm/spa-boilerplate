@@ -29,7 +29,7 @@ interface IConnectState<T> {
   data: T | null;
 }
 
-export const useGqlQuery = <T>(gqlQuery: string) => {
+export const useGqlQuery = <T>(gqlQuery: string, gqlVariables?: { [key: string]: string }) => {
   function dataQueryReducer(state: IConnectState<T>, action: ActionTypes<T>): IConnectState<T> {
     switch (action.type) {
       case OPERATION_START:
@@ -65,7 +65,7 @@ export const useGqlQuery = <T>(gqlQuery: string) => {
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const { query, variables } = graphqlOperation(gqlQuery);
+      const { query, variables } = graphqlOperation(gqlQuery, gqlVariables);
       const hasValidQuery = query && API.getGraphqlOperationType(query) === 'query';
       try {
         if (hasValidQuery && mounted) {
