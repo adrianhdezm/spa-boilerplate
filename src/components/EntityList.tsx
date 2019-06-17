@@ -26,7 +26,12 @@ const EntityList: React.FC<{ data: IEntity[]; onDelete: (id: string) => void }> 
       </div>
     );
   });
-  return <>{entities}</>;
+  return (
+    <>
+      <Link to={`${ENTITIES_BASE_PATH}/create`}>Add Entity</Link>
+      {entities}
+    </>
+  );
 };
 
 export default EntityList;
