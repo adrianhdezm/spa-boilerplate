@@ -2,21 +2,21 @@ import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 
 import {
+  ENTITIES_BASE_PATH,
   HOME_ROUTE_PATH,
   LOGIN_ROUTE_PATH,
   LOGOUT_ROUTE_PATH,
-  NOT_FOUND_PATH
+  NOT_FOUND_ROUTE_PATH
 } from '@app/constants';
 import { isAuthenticated, isNotAuthenticated } from '@app/services/auth';
 import ProtectedRoute from '@app/utils/ProtectedRoute';
+import EntityCreateView from '@app/views/EntityCreateView';
+import EntityDetailsView from '@app/views/EntityDetailsView';
 import EntityListView from '@app/views/EntityListView';
+import EntityUpdateView from '@app/views/EntityUpdateView';
 import LoginView from '@app/views/LoginView';
 import LogoutView from '@app/views/LogoutView';
 import NotFoundView from '@app/views/NotFoundView';
-
-import EntityCreateView from './views/EntityCreateView';
-import EntityDetailsView from './views/EntityDetailsView';
-import EntityUpdateView from './views/EntityUpdateView';
 
 const App: React.FC<{}> = () => {
   useEffect(() => {
@@ -53,28 +53,28 @@ const App: React.FC<{}> = () => {
             fallback={HOME_ROUTE_PATH}
             canLoad={isAuthenticated}
           />
-          <Route path={NOT_FOUND_PATH} component={NotFoundView} exact={true} />
           <ProtectedRoute
-            key={`${HOME_ROUTE_PATH}create`}
-            path={`${HOME_ROUTE_PATH}create`}
+            key={`${ENTITIES_BASE_PATH}/create`}
+            path={`${ENTITIES_BASE_PATH}/create`}
             component={EntityCreateView}
             fallback={LOGIN_ROUTE_PATH}
             canLoad={isAuthenticated}
           />
           <ProtectedRoute
-            key={`${HOME_ROUTE_PATH}:id/edit`}
-            path={`${HOME_ROUTE_PATH}:id/edit`}
+            key={`${ENTITIES_BASE_PATH}/:id/edit`}
+            path={`${ENTITIES_BASE_PATH}/:id/edit`}
             component={EntityUpdateView}
             fallback={LOGIN_ROUTE_PATH}
             canLoad={isAuthenticated}
           />
           <ProtectedRoute
-            key={`${HOME_ROUTE_PATH}:id`}
-            path={`${HOME_ROUTE_PATH}:id`}
+            key={`${ENTITIES_BASE_PATH}/:id`}
+            path={`${ENTITIES_BASE_PATH}/:id`}
             component={EntityDetailsView}
             fallback={LOGIN_ROUTE_PATH}
             canLoad={isAuthenticated}
           />
+          <Route path={NOT_FOUND_ROUTE_PATH} component={NotFoundView} exact={true} />
         </Switch>
       </Router>
     </>

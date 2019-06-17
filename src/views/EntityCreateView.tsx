@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import EntityForm from '@app/components/EntityForm';
 import PageLayout from '@app/components/PageLayout';
+import { ENTITIES_BASE_PATH } from '@app/constants';
 import { IEntityAttributes } from '@app/models';
 import { createEntity } from '@app/services/api/graphql/mutations';
 import { CreateEntityMutation } from '@app/services/api/models';
@@ -23,7 +24,7 @@ const EntityCreateView: React.FC<RouteComponentProps<{}>> = ({ history }) => {
         const { errors, data } = response as GraphQLResult;
         const entity = (data as CreateEntityMutation).createEntity;
         if (entity) {
-          history.push(`/${entity.id}`);
+          history.push(`${ENTITIES_BASE_PATH}/${entity.id}`);
         }
         if (errors && errors.length > 0) {
           throw new Error('Response Error');

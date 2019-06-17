@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import EntityForm from '@app/components/EntityForm';
 import PageLayout from '@app/components/PageLayout';
+import { ENTITIES_BASE_PATH } from '@app/constants';
 import { IEntity, IEntityAttributes } from '@app/models';
 import { updateEntity } from '@app/services/api/graphql/mutations';
 import { getEntity } from '@app/services/api/graphql/queries';
@@ -28,7 +29,7 @@ const EntityUpdateView: React.FC<RouteComponentProps<{ id: string }>> = ({ histo
         const { errors, data: responceData } = response as GraphQLResult;
         const responceEntity = (responceData as UpdateEntityMutation).updateEntity;
         if (responceEntity) {
-          history.push(`/${responceEntity.id}`);
+          history.push(`${ENTITIES_BASE_PATH}/${responceEntity.id}`);
         }
         if (errors && errors.length > 0) {
           throw new Error('Response Error');

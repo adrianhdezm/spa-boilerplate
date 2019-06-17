@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { ENTITIES_BASE_PATH } from '@app/constants';
 import { IEntity } from '@app/models';
 
 const EntityList: React.FC<{ data: IEntity[]; onDelete: (id: string) => void }> = ({
@@ -17,8 +18,8 @@ const EntityList: React.FC<{ data: IEntity[]; onDelete: (id: string) => void }> 
     const handleClick = () => handleDelete(item.id);
     return (
       <div key={index}>
-        <Link to={`/${item.id}`}>{item.name}</Link>
-        <Link to={`/${item.id}/edit`}>Edit</Link>
+        <Link to={`${ENTITIES_BASE_PATH}/${item.id}`}>{item.name}</Link>
+        <Link to={`${ENTITIES_BASE_PATH}/${item.id}/edit`}>Edit</Link>
         <button type="button" onClick={handleClick}>
           Delete
         </button>
