@@ -1,52 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 
 import EntityList from '@app/components/EntityList';
 import PageLayout from '@app/components/PageLayout';
-import { IEntity } from '@app/models';
-import { deleteEntity } from '@app/services/api/graphql/mutations';
-import { listEntitys } from '@app/services/api/graphql/queries';
-import { DeleteEntityMutation, ListEntitysQuery } from '@app/services/api/models';
-import { useGqlQuery } from '@app/utils/hooks';
-import API, { graphqlOperation } from '@aws-amplify/api';
-import { GraphQLResult } from '@aws-amplify/api/lib/types';
+import {
+  deleteEntityReset,
+  deleteEntityStart,
+  listEntitiesReset,
+  listEntitiesStart
+} from '@app/store/entities/actions';
+import { IEntity } from '@app/store/entities/models';
+import { IAppState } from '@app/store/models';
+import { getEntities as getEntitiesSelector } from '@app/store/selectors';
 
 const EntityListView: React.FC<RouteComponentProps<{}>> = () => {
-  const [entities, setEntities] = useState<IEntity[]>([]);
+  const dispatch = useDispatch();
+  const data = useSelector<IAppState, IEntity[]>((state) => getEntitiesSelector(state));
+  const isLoading = useSelector<IAppState, boolean>((state) => state.entities.operations.query.pending);
+  const itemWasDeleted = useSelector<IAppState, boolean>((state) => state.entities.operations.mutation.completed);
+  const error = useSelector<IAppState, Error | null>((state) => state.entities.operations.mutation.error);
 
-  const { isLoading, data } = useGqlQuery<ListEntitysQuery>(listEntitys);
-
-  const handleDelete = async (id: string) => {
-    try {
-      const { query, variables } = graphqlOperation(deleteEntity, { input: { id } });
-      const hasValidMutation = query && API.getGraphqlOperationType(query) === 'mutation';
-      if (hasValidMutation) {
-        const response = await API.graphql({ query, variables });
-        const { errors, data: responceData } = response as GraphQLResult;
-        const responceEntity = (responceData as DeleteEntityMutation).deleteEntity;
-        const idx = entities.findIndex((item) => item.id === (responceEntity as IEntity).id);
-        setEntities([...entities.slice(0, idx), ...entities.slice(idx + 1)]);
-
-        if (errors && errors.length > 0) {
-          throw new Error('Response Error');
-        }
-      }
-    } catch (error) {
-      throw new Error('Delete Error');
-    }
+  const handleDelete = (id: string) => {
+    dispatch(deleteEntityStart({ id }));
   };
 
   useEffect(() => {
-    if (data && data.listEntitys && data.listEntitys.items) {
-      const items = data.listEntitys.items;
-      setEntities(items as IEntity[]);
+    if (error) {
+      console.log(error);
     }
-  }, [data]);
+
+    return () => {
+      dispatch(deleteEntityReset());
+    };
+  }, [itemWasDeleted]);
+
+  useEffect(() => {
+    dispatch(listEntitiesStart());
+
+    return () => {
+      dispatch(listEntitiesReset());
+    };
+  }, []);
 
   return (
-    <PageLayout loading={isLoading || entities.length === 0}>
-      <EntityList data={entities} onDelete={handleDelete} />
-    </PageLayout>
+    <PageLayout loading={isLoading}>{data ? <EntityList data={data} onDelete={handleDelete} /> : null}</PageLayout>
   );
 };
 

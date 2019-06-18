@@ -5,3 +5,4 @@ import 'core-js/es/set';
 import 'core-js/es/promise';
 import 'raf/polyfill';
 import 'whatwg-fetch';
+import 'regenerator-runtime/runtime';

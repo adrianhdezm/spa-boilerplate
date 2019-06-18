@@ -3,13 +3,8 @@ import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import Login from '@app/components/Login';
-import {
-  AUTH_STEP_CONFIRM_SIGNIN,
-  AUTH_STEP_NEW_PASSWORD,
-  AUTH_STEP_SIGNIN,
-  HOME_ROUTE_PATH
-} from '@app/constants';
-import { ILoginFormAttributes, ILoginFormState } from '@app/models';
+import { AUTH_STEP_CONFIRM_SIGNIN, AUTH_STEP_NEW_PASSWORD, AUTH_STEP_SIGNIN, HOME_ROUTE_PATH } from '@app/constants';
+import { ILoginFormAttributes, ILoginFormState } from '@app/store/models';
 import Auth from '@aws-amplify/auth';
 
 const LoginView: React.FC<RouteComponentProps<{}>> = ({ history, location }) => {
@@ -30,10 +25,7 @@ const LoginView: React.FC<RouteComponentProps<{}>> = ({ history, location }) => 
     history.push(from.pathname);
   };
 
-  const handleSubmit = async (
-    values: ILoginFormAttributes,
-    actions: FormikActions<ILoginFormAttributes>
-  ) => {
+  const handleSubmit = async (values: ILoginFormAttributes, actions: FormikActions<ILoginFormAttributes>) => {
     const { setStatus, setErrors, setSubmitting } = actions;
     const { email, password, newPassword, code } = values;
 

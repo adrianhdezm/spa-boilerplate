@@ -17,6 +17,7 @@ dist/
 logs
 *.log
 npm-debug.log*
+aws-exports.*s
 
 #amplify
 amplify/\#current-cloud-backend

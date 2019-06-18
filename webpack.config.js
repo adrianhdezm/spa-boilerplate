@@ -88,8 +88,8 @@ module.exports = (env) => {
       performance: isProd
         ? {
             hints: 'error',
-            maxEntrypointSize: 1000000,
-            maxAssetSize: 1500000
+            maxEntrypointSize: 1500000,
+            maxAssetSize: 2500000
           }
         : { hints: false },
       optimization: {

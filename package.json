@@ -31,6 +31,7 @@
     "@types/puppeteer": "^1.12.4",
     "@types/react": "^16.8.13",
     "@types/react-dom": "^16.8.4",
+    "@types/react-redux": "^7.1.0",
     "@types/react-router-dom": "^4.3.3",
     "camelcase": "^5.3.1",
     "clean-webpack-plugin": "^3.0.0",
@@ -69,13 +70,26 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "aws-amplify": "^1.1.28",
+    "@aws-amplify/api": "^1.0.36",
+    "@aws-amplify/auth": "^1.2.25",
+    "@aws-amplify/core": "^1.0.28",
+    "@aws-amplify/pubsub": "^1.0.29",
+    "connected-react-router": "^6.4.0",
     "core-js": "^3.0.1",
     "formik": "^1.5.7",
+    "history": "^4.9.0",
     "raf": "^3.4.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-redux": "^7.1.0",
     "react-router-dom": "^5.0.1",
+    "redux": "^4.0.1",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-observable": "^1.1.0",
+    "regenerator-runtime": "^0.13.2",
+    "rxjs": "^6.5.2",
+    "ts-action": "^10.1.0",
+    "ts-action-operators": "^9.1.0",
     "whatwg-fetch": "^3.0.0"
   }
 }

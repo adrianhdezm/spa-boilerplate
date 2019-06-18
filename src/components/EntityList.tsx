@@ -2,12 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { ENTITIES_BASE_PATH } from '@app/constants';
-import { IEntity } from '@app/models';
+import { IEntity } from '@app/store/entities/models';
 
-const EntityList: React.FC<{ data: IEntity[]; onDelete: (id: string) => void }> = ({
-  data,
-  onDelete
-}) => {
+const EntityList: React.FC<{ data: IEntity[]; onDelete: (id: string) => void }> = ({ data, onDelete }) => {
   const handleDelete = (id: string) => {
     if (id) {
       onDelete(id);

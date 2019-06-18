@@ -1,3 +1,4 @@
+import { IEntitiesState } from '@app/store/entities/models';
 import { CognitoUser } from '@aws-amplify/auth';
 
 export interface ILoginFormAttributes {
@@ -12,11 +13,6 @@ export interface ILoginFormState {
   user: CognitoUser | null;
 }
 
-export interface IEntityAttributes {
-  name: string;
-  description?: string;
-}
-
-export interface IEntity extends IEntityAttributes {
-  id: string;
+export interface IAppState {
+  entities: IEntitiesState;
 }

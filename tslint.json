@@ -11,6 +11,7 @@
     "no-implicit-dependencies": [true, ["@app", "@assets", "@aws-amplify"]],
     "no-submodule-imports": [
       true,
+      "regenerator-runtime",
       "@aws-amplify",
       "core-js/es",
       "react-dom",

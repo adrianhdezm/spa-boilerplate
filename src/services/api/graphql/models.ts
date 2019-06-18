@@ -4,7 +4,7 @@
 export type CreateEntityInput = {
   id?: string | null;
   name: string;
-  description?: string | null;
+  description: string;
 };
 
 export type UpdateEntityInput = {
@@ -61,7 +61,7 @@ export type CreateEntityMutation = {
     __typename: 'Entity';
     id: string;
     name: string;
-    description: string | null;
+    description: string;
   } | null;
 };
 
@@ -74,7 +74,7 @@ export type UpdateEntityMutation = {
     __typename: 'Entity';
     id: string;
     name: string;
-    description: string | null;
+    description: string;
   } | null;
 };
 
@@ -87,7 +87,7 @@ export type DeleteEntityMutation = {
     __typename: 'Entity';
     id: string;
     name: string;
-    description: string | null;
+    description: string;
   } | null;
 };
 
@@ -100,7 +100,7 @@ export type GetEntityQuery = {
     __typename: 'Entity';
     id: string;
     name: string;
-    description: string | null;
+    description: string;
   } | null;
 };
 
@@ -117,7 +117,7 @@ export type ListEntitysQuery = {
       __typename: 'Entity';
       id: string;
       name: string;
-      description: string | null;
+      description: string;
     } | null> | null;
     nextToken: string | null;
   } | null;
@@ -128,7 +128,7 @@ export type OnCreateEntitySubscription = {
     __typename: 'Entity';
     id: string;
     name: string;
-    description: string | null;
+    description: string;
   } | null;
 };
 
@@ -137,7 +137,7 @@ export type OnUpdateEntitySubscription = {
     __typename: 'Entity';
     id: string;
     name: string;
-    description: string | null;
+    description: string;
   } | null;
 };
 
@@ -146,6 +146,6 @@ export type OnDeleteEntitySubscription = {
     __typename: 'Entity';
     id: string;
     name: string;
-    description: string | null;
+    description: string;
   } | null;
 };
