@@ -1,7 +1,7 @@
 import { FormikProps } from 'formik';
 import React from 'react';
 
-import { IEntityAttributes } from '@app/store/entities/models';
+import { IEntityAttributes } from '@app/models';
 
 const EntityForm: React.FC<FormikProps<IEntityAttributes>> = ({
   handleSubmit,
@@ -29,7 +29,7 @@ const EntityForm: React.FC<FormikProps<IEntityAttributes>> = ({
         name="description"
       />
       {errors.description && touched.description ? <div>{errors.description}</div> : null}
-      <button type="submit">Submit</button>
+      <button type="submit">Add</button>
     </form>
   );
 };

@@ -1,59 +1,38 @@
 import { Formik, FormikActions } from 'formik';
-import React, { useEffect, useRef } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Dispatch } from 'redux';
 
 import EntityForm from '@app/components/EntityForm';
-import Page from '@app/components/Page';
-import { ENTITY_PREFIX_PATH } from '@app/constants';
-import { EntityActionTypes, IEntity, IEntityAttributes } from '@app/store/entities/models';
-import {
-  createEntityReset,
-  createEntityStart
-} from '@app/store/entities/operations/create/actions';
-import { IAppState } from '@app/store/models';
+import PageLayout from '@app/components/PageLayout';
+import { ENTITIES_BASE_PATH } from '@app/constants';
+import { IEntityAttributes } from '@app/models';
+import { createEntity } from '@app/services/api/graphql/mutations';
+import { CreateEntityMutation } from '@app/services/api/models';
+import API, { graphqlOperation } from '@aws-amplify/api';
+import { GraphQLResult } from '@aws-amplify/api/lib/types';
 
-interface IStateProps {
-  data: IEntity;
-  error: Error;
-  itemIsUpdated: boolean;
-}
-interface IDispatchProps {
-  createEntity: (attrs: IEntityAttributes) => void;
-  resetActionData: () => void;
-}
-
-type EntityCreateViewProps = RouteComponentProps<{}> & IStateProps & IDispatchProps;
-
-const EntityCreateView: React.FC<EntityCreateViewProps> = ({
-  history,
-  data,
-  error,
-  createEntity,
-  resetActionData,
-  itemIsUpdated
-}) => {
-  const formikRef = useRef<Formik<IEntityAttributes>>();
-
-  useEffect(() => {
-    if (error && formikRef.current) {
-      formikRef.current.setErrors({
-        name: error.message
-      });
-    }
-
-    if (itemIsUpdated && !error) {
-      resetActionData();
-      history.push(`${ENTITY_PREFIX_PATH}/${data.objectId}`);
-    }
-  }, [itemIsUpdated]);
-
+const EntityCreateView: React.FC<RouteComponentProps<{}>> = ({ history }) => {
   const handleSubmit = async (
     values: IEntityAttributes,
     actions: FormikActions<IEntityAttributes>
   ) => {
-    createEntity(values);
+    try {
+      const { query, variables } = graphqlOperation(createEntity, { input: values });
+      const hasValidMutation = query && API.getGraphqlOperationType(query) === 'mutation';
+      if (hasValidMutation) {
+        const response = await API.graphql({ query, variables });
+        const { errors, data } = response as GraphQLResult;
+        const entity = (data as CreateEntityMutation).createEntity;
+        if (entity) {
+          history.push(`${ENTITIES_BASE_PATH}/${entity.id}`);
+        }
+        if (errors && errors.length > 0) {
+          throw new Error('Response Error');
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
     actions.setSubmitting(false);
   };
 
@@ -63,35 +42,10 @@ const EntityCreateView: React.FC<EntityCreateViewProps> = ({
   };
 
   return (
-    <Page>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-        render={EntityForm}
-        ref={formikRef}
-      />
-    </Page>
+    <PageLayout>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit} render={EntityForm} />
+    </PageLayout>
   );
 };
 
-function mapStateToProps(state: IAppState) {
-  const { item, error, isSuccess } = state.entities.operations.create;
-
-  return {
-    data: item,
-    error,
-    itemIsUpdated: isSuccess
-  };
-}
-
-function mapDispatchToProps(dispatch: Dispatch<EntityActionTypes>) {
-  return {
-    createEntity: (attrs: IEntityAttributes) => dispatch(createEntityStart(attrs)),
-    resetActionData: () => dispatch(createEntityReset())
-  };
-}
-
-export default connect<IStateProps, IDispatchProps, RouteComponentProps<{}>>(
-  mapStateToProps,
-  mapDispatchToProps
-)(EntityCreateView);
+export default EntityCreateView;

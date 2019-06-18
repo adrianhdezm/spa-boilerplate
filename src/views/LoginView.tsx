@@ -1,97 +1,116 @@
 import { Formik, FormikActions } from 'formik';
-import React, { useEffect, useRef } from 'react';
-import { connect } from 'react-redux';
+import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Dispatch } from 'redux';
 
-import LoginPage from '@app/components/LoginPage';
-import { HOME_ROUTE_PATH } from '@app/constants';
-import { IFormSchema, validateValues } from '@app/services/validation';
-import { IAppState } from '@app/store/models';
-import { isAuthenticated as isAuthSelector } from '@app/store/selectors';
-import { loginStart } from '@app/store/user/actions';
-import { AuthActionTypes, IUser } from '@app/store/user/models';
+import Login from '@app/components/Login';
+import {
+  AUTH_STEP_CONFIRM_SIGNIN,
+  AUTH_STEP_NEW_PASSWORD,
+  AUTH_STEP_SIGNIN,
+  HOME_ROUTE_PATH
+} from '@app/constants';
+import { ILoginFormAttributes, ILoginFormState } from '@app/models';
+import Auth from '@aws-amplify/auth';
 
-interface IStateProps {
-  networkError: Error;
-  isAuthenticated: boolean;
-}
-interface IDispatchProps {
-  login: (username: string, password: string) => void;
-}
-
-type LoginViewProps = RouteComponentProps<{}> & IStateProps & IDispatchProps;
-
-const LoginView: React.FC<LoginViewProps> = ({
-  history,
-  location,
-  login,
-  networkError,
-  isAuthenticated
-}) => {
-  const formikRef = useRef<Formik<IUser>>();
-
-  const handleSubmit = (values: IUser, actions: FormikActions<IUser>) => {
-    const { username, password } = values;
-    login(username, password);
-    actions.setSubmitting(false);
-  };
-
-  const initialValues: IUser = {
-    password: '',
-    username: ''
-  };
-
-  const schema: IFormSchema = {
-    username: { type: 'string', required: true },
-    password: { type: 'string', required: true }
-  };
-
-  const validate = (values: IUser) => {
-    const errors = validateValues(values, schema);
-    return errors;
-  };
-
-  useEffect(() => {
-    if (networkError && formikRef.current) {
-      formikRef.current.setErrors({
-        username: networkError.message
-      });
-    }
-
-    if (isAuthenticated) {
-      const { from } = location.state || { from: { pathname: HOME_ROUTE_PATH } };
-      history.push(from.pathname);
-    }
+const LoginView: React.FC<RouteComponentProps<{}>> = ({ history, location }) => {
+  const [authState, setAuthState] = useState<ILoginFormState>({
+    step: AUTH_STEP_SIGNIN,
+    user: null
   });
+
+  const initialValues: ILoginFormAttributes = {
+    password: '',
+    email: '',
+    newPassword: '',
+    code: ''
+  };
+
+  const redirect = () => {
+    const { from } = location.state || { from: { pathname: HOME_ROUTE_PATH } };
+    history.push(from.pathname);
+  };
+
+  const handleSubmit = async (
+    values: ILoginFormAttributes,
+    actions: FormikActions<ILoginFormAttributes>
+  ) => {
+    const { setStatus, setErrors, setSubmitting } = actions;
+    const { email, password, newPassword, code } = values;
+
+    try {
+      const { step, user } = authState;
+      if (step === AUTH_STEP_SIGNIN) {
+        const loggedUser = await Auth.signIn(email, password);
+
+        if (loggedUser.challengeName === 'SOFTWARE_TOKEN_MFA') {
+          setAuthState({ step: AUTH_STEP_CONFIRM_SIGNIN, user: loggedUser });
+          setStatus(AUTH_STEP_CONFIRM_SIGNIN);
+        }
+
+        if (loggedUser.challengeName === 'NEW_PASSWORD_REQUIRED') {
+          setAuthState({ step: AUTH_STEP_NEW_PASSWORD, user: loggedUser });
+          setStatus(AUTH_STEP_NEW_PASSWORD);
+        }
+
+        if (loggedUser && !loggedUser.challengeName) {
+          redirect();
+        }
+      }
+
+      if (user && step === AUTH_STEP_CONFIRM_SIGNIN) {
+        const loggedUser = await Auth.confirmSignIn(
+          user, // Return object from Auth.signIn()
+          code, // Confirmation code
+          'SOFTWARE_TOKEN_MFA' // MFA Type e.g. SMS_MFA, SOFTWARE_TOKEN_MFA
+        );
+        if (loggedUser && !loggedUser.challengeName) {
+          redirect();
+        }
+      }
+      if (user && step === AUTH_STEP_NEW_PASSWORD) {
+        const loggedUser = await Auth.completeNewPassword(
+          user, // the Cognito User Object
+          newPassword, // the new password
+          {
+            email
+          }
+        );
+        if (loggedUser && !loggedUser.challengeName) {
+          redirect();
+        }
+      }
+    } catch (error) {
+      if (error.code === 'NotAuthorizedException') {
+        // The error happens when the incorrect password is provided
+        setErrors({ password: 'Incorrect password is provided' });
+      } else if (error.code === 'UserNotFoundException') {
+        // The error happens when the supplied username/email does not exist in the Cognito user pool
+        setErrors({ email: 'Supplied username does not exist' });
+      } else if (error === 'Password cannot be empty') {
+        setErrors({ newPassword: 'New password cannot be empty' });
+      } else {
+        console.log(error);
+      }
+    }
+    setSubmitting(false);
+  };
+
+  const validate = (values: ILoginFormAttributes) => {
+    return {
+      ...(values.email === '' ? { email: 'Email is required' } : {}),
+      ...(values.password === '' ? { password: 'Password is required' } : {})
+    };
+  };
 
   return (
     <Formik
       initialValues={initialValues}
+      initialStatus={AUTH_STEP_SIGNIN}
       validate={validate}
       onSubmit={handleSubmit}
-      render={LoginPage}
-      ref={formikRef}
+      render={Login}
     />
   );
 };
 
-function mapStateToProps(state: IAppState) {
-  const { error } = state.user;
-
-  return {
-    networkError: error,
-    isAuthenticated: isAuthSelector(state)
-  };
-}
-
-function mapDispatchToProps(dispatch: Dispatch<AuthActionTypes>) {
-  return {
-    login: (username: string, password: string) => dispatch(loginStart(username, password))
-  };
-}
-
-export default connect<IStateProps, IDispatchProps, RouteComponentProps<{}>>(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginView);
+export default LoginView;

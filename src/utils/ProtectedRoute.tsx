@@ -1,22 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 
-type ProtectedRouteProps = RouteProps & { canNavigate: boolean; fallback: string };
+type ProtectedRouteProps = RouteProps & { canLoad: () => Promise<boolean>; fallback: string };
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  canNavigate,
+  canLoad,
   fallback,
+  location,
   component,
   ...rest
 }) => {
-  const RouteComponent: React.ComponentType<RouteProps> = (props) =>
-    canNavigate ? (
-      React.createElement(component, { ...props }, null)
-    ) : (
-      <Redirect to={fallback} from={props.location.pathname} />
-    );
+  const [isAllowed, setIsAllowed] = useState<boolean>();
 
-  return <Route {...rest} render={RouteComponent} />;
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const isAllowedValue = await canLoad();
+        if (mounted) {
+          setIsAllowed(isAllowedValue);
+        }
+      } catch (e) {
+        if (mounted) {
+          setIsAllowed(false);
+        }
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (isAllowed === undefined) {
+    return <Route render={undefined} />;
+  }
+  const from = location && location.pathname ? { from: location.pathname } : {};
+  return isAllowed ? (
+    <Route {...rest} component={component} />
+  ) : (
+    <Redirect to={fallback} {...from} />
+  );
 };
 
 export default ProtectedRoute;

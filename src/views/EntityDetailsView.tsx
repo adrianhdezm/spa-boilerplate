@@ -1,57 +1,23 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Dispatch } from 'redux';
 
 import EntityDetails from '@app/components/EntityDetails';
-import Page from '@app/components/Page';
-import { EntityActionTypes, IEntity } from '@app/store/entities/models';
-import { readEntityStart } from '@app/store/entities/operations/read/actions';
-import { IAppState } from '@app/store/models';
+import PageLayout from '@app/components/PageLayout';
+import { IEntity } from '@app/models';
+import { getEntity } from '@app/services/api/graphql/queries';
+import { GetEntityQuery } from '@app/services/api/models';
+import { useGqlQuery } from '@app/utils/hooks';
 
-interface IStateProps {
-  data: IEntity;
-  isLoading: boolean;
-}
-interface IDispatchProps {
-  fetchEntity: (id: string) => void;
-}
+const EntityDetailsView: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
+  const { isLoading, data } = useGqlQuery<GetEntityQuery>(getEntity, { id: match.params.id });
 
-type EntityDetailsViewProps = RouteComponentProps<{ id: string }> & IStateProps & IDispatchProps;
-
-const EntityDetailsView: React.FC<EntityDetailsViewProps> = ({
-  match,
-  isLoading,
-  data,
-  fetchEntity
-}) => {
-  useEffect(() => {
-    fetchEntity(match.params.id);
-  }, [match.params.id]);
+  const entity = data && data.getEntity;
 
   return (
-    <Page loading={isLoading || !data}>
-      <EntityDetails data={data} />
-    </Page>
+    <PageLayout loading={isLoading || !entity}>
+      <EntityDetails data={entity as IEntity} />
+    </PageLayout>
   );
 };
 
-function mapStateToProps(state: IAppState) {
-  const { item, pending } = state.entities.operations.read;
-
-  return {
-    data: item,
-    isLoading: pending
-  };
-}
-
-function mapDispatchToProps(dispatch: Dispatch<EntityActionTypes>) {
-  return {
-    fetchEntity: (id: string) => dispatch(readEntityStart(id))
-  };
-}
-
-export default connect<IStateProps, IDispatchProps, RouteComponentProps<{ id: string }>>(
-  mapStateToProps,
-  mapDispatchToProps
-)(EntityDetailsView);
+export default EntityDetailsView;

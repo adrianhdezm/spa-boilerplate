@@ -1,24 +1,22 @@
-import { getApiBaseUrl } from '@app/services/location';
+import Auth from '@aws-amplify/auth';
 
-export const login = async (username: string, password: string): Promise<string> => {
-  try {
-    const apiUrl = getApiBaseUrl();
-    const response = await fetch(`${apiUrl}/login`, {
-      body: JSON.stringify({ username, password }),
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      method: 'POST'
-    });
-    if (!response.ok) {
-      throw Error(response.statusText);
+const isUserAuthenticated = (negation: boolean) => {
+  return async () => {
+    try {
+      const user = await Auth.currentAuthenticatedUser({
+        // Optional, By default is false.
+        // If set to true, this call will send a request to Cognito to get the latest user data
+        bypassCache: false
+      });
+      if (user) {
+        return negation;
+      }
+      return !negation;
+    } catch (error) {
+      return !negation;
     }
-    const { sessionToken } = await response.json();
-    return sessionToken;
-  } catch (error) {
-    if (!error.message) {
-      throw new Error('Failed to connect with the authorization server');
-    }
-    throw error;
-  }
+  };
 };
+
+export const isAuthenticated = isUserAuthenticated(true);
+export const isNotAuthenticated = isUserAuthenticated(false);

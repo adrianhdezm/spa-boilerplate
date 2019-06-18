@@ -1,87 +1,53 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Dispatch } from 'redux';
 
 import EntityList from '@app/components/EntityList';
-import Page from '@app/components/Page';
-import { EntityActionTypes, IEntity } from '@app/store/entities/models';
-import {
-  deleteEntityReset,
-  deleteEntityStart
-} from '@app/store/entities/operations/delete/actions';
-import { listEntitiesStart, listMoreEntities } from '@app/store/entities/operations/list/actions';
-import { IAppState } from '@app/store/models';
-import { getEntities as getEntitiesSelector } from '@app/store/selectors';
+import PageLayout from '@app/components/PageLayout';
+import { IEntity } from '@app/models';
+import { deleteEntity } from '@app/services/api/graphql/mutations';
+import { listEntitys } from '@app/services/api/graphql/queries';
+import { DeleteEntityMutation, ListEntitysQuery } from '@app/services/api/models';
+import { useGqlQuery } from '@app/utils/hooks';
+import API, { graphqlOperation } from '@aws-amplify/api';
+import { GraphQLResult } from '@aws-amplify/api/lib/types';
 
-interface IStateProps {
-  data: IEntity[];
-  isLoading: boolean;
-  itemIsDeleted: boolean;
-  error: Error;
-}
-interface IDispatchProps {
-  deleteEntity: (id: string) => void;
-  fetchEntities: () => void;
-  resetActionData: () => void;
-  fetchMoreEntities: () => void;
-}
+const EntityListView: React.FC<RouteComponentProps<{}>> = () => {
+  const [entities, setEntities] = useState<IEntity[]>([]);
 
-type EntityListViewProps = RouteComponentProps<{}> & IStateProps & IDispatchProps;
+  const { isLoading, data } = useGqlQuery<ListEntitysQuery>(listEntitys);
 
-const EntityListView: React.FC<EntityListViewProps> = ({
-  data,
-  isLoading,
-  deleteEntity,
-  fetchEntities,
-  resetActionData,
-  itemIsDeleted,
-  fetchMoreEntities,
-  error
-}) => {
-  const handleDelete = (objectId: string) => {
-    deleteEntity(objectId);
+  const handleDelete = async (id: string) => {
+    try {
+      const { query, variables } = graphqlOperation(deleteEntity, { input: { id } });
+      const hasValidMutation = query && API.getGraphqlOperationType(query) === 'mutation';
+      if (hasValidMutation) {
+        const response = await API.graphql({ query, variables });
+        const { errors, data: responceData } = response as GraphQLResult;
+        const responceEntity = (responceData as DeleteEntityMutation).deleteEntity;
+        const idx = entities.findIndex((item) => item.id === (responceEntity as IEntity).id);
+        setEntities([...entities.slice(0, idx), ...entities.slice(idx + 1)]);
+
+        if (errors && errors.length > 0) {
+          throw new Error('Response Error');
+        }
+      }
+    } catch (error) {
+      throw new Error('Delete Error');
+    }
   };
 
   useEffect(() => {
-    fetchEntities();
-  }, []);
-
-  useEffect(() => {
-    if (itemIsDeleted && !error) {
-      resetActionData();
+    if (data && data.listEntitys && data.listEntitys.items) {
+      const items = data.listEntitys.items;
+      setEntities(items as IEntity[]);
     }
-  }, [itemIsDeleted]);
+  }, [data]);
 
   return (
-    <Page loading={isLoading || !data}>
-      <EntityList data={data} onDelete={handleDelete} onLoadMore={fetchMoreEntities} />
-    </Page>
+    <PageLayout loading={isLoading || entities.length === 0}>
+      <EntityList data={entities} onDelete={handleDelete} />
+    </PageLayout>
   );
 };
 
-function mapStateToProps(state: IAppState) {
-  const { pending } = state.entities.operations.list;
-  const { isSuccess: itemIsDeleted, error } = state.entities.operations.delete;
-
-  return {
-    data: getEntitiesSelector(state),
-    isLoading: pending,
-    itemIsDeleted,
-    error
-  };
-}
-
-function mapDispatchToProps(dispatch: Dispatch<EntityActionTypes>) {
-  return {
-    deleteEntity: (id: string) => dispatch(deleteEntityStart(id)),
-    fetchEntities: () => dispatch(listEntitiesStart()),
-    resetActionData: () => dispatch(deleteEntityReset()),
-    fetchMoreEntities: () => dispatch(listMoreEntities())
-  };
-}
-
-export default connect<IStateProps, IDispatchProps, RouteComponentProps<{}>>(
-  mapStateToProps,
-  mapDispatchToProps
-)(EntityListView);
+export default EntityListView;

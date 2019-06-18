@@ -8,9 +8,10 @@
     "member-access": [true, "no-public"],
     "trailing-comma": false,
     "ordered-imports": false,
-    "no-implicit-dependencies": [true, ["@app", "@assets"]],
+    "no-implicit-dependencies": [true, ["@app", "@assets", "@aws-amplify"]],
     "no-submodule-imports": [
       true,
+      "@aws-amplify",
       "core-js/es",
       "react-dom",
       "@app",
