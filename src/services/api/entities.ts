@@ -7,9 +7,20 @@ import {
 } from '@app/services/api/graphql/models';
 import * as mutations from '@app/services/api/graphql/mutations';
 import * as queries from '@app/services/api/graphql/queries';
-import { IEntity, IEntityAttributes } from '@app/store/entities/models';
+import { IEntity, IEntityAttributes, IResponceEntity } from '@app/store/entities/models';
 import API, { graphqlOperation } from '@aws-amplify/api';
 import { GraphQLResult } from '@aws-amplify/api/lib/types';
+
+const mapToEntity = (entity: IResponceEntity) => {
+  const { id, name, tags } = entity;
+  const description = entity.description || undefined;
+  return {
+    id,
+    name,
+    tags,
+    description
+  };
+};
 
 export const createEntity = async (attrs: IEntityAttributes) => {
   try {
@@ -19,11 +30,11 @@ export const createEntity = async (attrs: IEntityAttributes) => {
       const response = await API.graphql({ query, variables });
       const { errors, data } = response as GraphQLResult;
       const entity = (data as CreateEntityMutation).createEntity;
-
+      
       if (!entity || (errors && errors.length > 0)) {
         throw new Error('Response Error');
       }
-      return entity;
+      return mapToEntity(entity);
     } else {
       throw new Error('Not valid query was specified');
     }
@@ -44,7 +55,7 @@ export const deleteEntity = async (id: string) => {
       if (!entity || (errors && errors.length > 0)) {
         throw new Error('Response Error');
       }
-      return entity;
+      return mapToEntity(entity);
     } else {
       throw new Error('Not valid query was specified');
     }
@@ -65,7 +76,7 @@ export const updateEntity = async (id: string, attrs: IEntityAttributes) => {
       if (!entity || (errors && errors.length > 0)) {
         throw new Error('Response Error');
       }
-      return entity;
+      return mapToEntity(entity);
     } else {
       throw new Error('Not valid query was specified');
     }
@@ -85,7 +96,7 @@ export const readEntity = async (id: string) => {
       if (!entity || (errors && errors.length > 0)) {
         throw new Error('Response Error');
       }
-      return entity;
+      return mapToEntity(entity);
     } else {
       throw new Error('Not valid query was specified');
     }

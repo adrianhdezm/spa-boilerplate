@@ -1,5 +1,5 @@
 projects:
-  spaDevApi:
+  entityApi:
     schemaPath: src/services/api/graphql/schema.json
     includes:
       - src/services/api/graphql/**/*.ts

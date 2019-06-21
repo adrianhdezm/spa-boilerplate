@@ -1,6 +1,15 @@
+export interface IResponceEntity {
+  __typename: 'Entity';
+  id: string;
+  name: string;
+  description: string | null;
+  tags: string[];
+}
+
 export interface IEntityAttributes {
   name: string;
-  description: string;
+  description?: string;
+  tags: string[];
 }
 
 export interface IEntity extends IEntityAttributes {

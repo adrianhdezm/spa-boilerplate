@@ -1,0 +1,71 @@
+{
+    "identityPoolName": "spaboilerplate906117dc_identitypool_906117dc",
+    "allowUnauthenticatedIdentities": false,
+    "lambdaLogPolicy": "spaboi_906117dc_lambda_log_policy",
+    "openIdLambdaRoleName": "spaboi_906117dc_openid_lambda_role",
+    "openIdRolePolicy": "spaboi_906117dc_openid_pass_role_policy",
+    "openIdLambdaIAMPolicy": "spaboi_906117dc_openid_lambda_iam_policy",
+    "openIdLogPolicy": "spaboi_906117dc_openid_lambda_log_policy",
+    "userPoolName": "spaboilerplate906117dc_userpool_906117dc",
+    "autoVerifiedAttributes": [
+        "email"
+    ],
+    "mfaConfiguration": "OFF",
+    "mfaTypes": [
+        "SMS Text Message"
+    ],
+    "roleName": "spaboi906117dc_sns-role",
+    "roleExternalId": "spaboi906117dc_role_external_id",
+    "policyName": "spaboi906117dc-sns-policy",
+    "smsAuthenticationMessage": "Your authentication code is {####}",
+    "smsVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "Your verification code",
+    "emailVerificationMessage": "Your verification code is {####}",
+    "defaultPasswordPolicy": false,
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": [],
+    "requiredAttributes": [
+        "email"
+    ],
+    "userpoolClientName": "spaboi906117dc_app_client",
+    "userpoolClientGenerateSecret": true,
+    "userpoolClientRefreshTokenValidity": 30,
+    "userpoolClientWriteAttributes": [
+        "email"
+    ],
+    "userpoolClientReadAttributes": [
+        "email"
+    ],
+    "mfaLambdaRole": "spaboi906117dc_totp_lambda_role",
+    "mfaLambdaLogPolicy": "spaboi906117dc_totp_lambda_log_policy",
+    "mfaPassRolePolicy": "spaboi906117dc_totp_pass_role_policy",
+    "mfaLambdaIAMPolicy": "spaboi906117dc_totp_lambda_iam_policy",
+    "userpoolClientLambdaRole": "spaboi906117dc_userpoolclient_lambda_role",
+    "userpoolClientLogPolicy": "spaboi906117dc_userpoolclient_lambda_log_policy",
+    "userpoolClientLambdaPolicy": "spaboi906117dc_userpoolclient_lambda_iam_policy",
+    "userpoolClientSetAttributes": false,
+    "resourceName": "spaboilerplate906117dc",
+    "authSelections": "identityPoolAndUserPool",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    },
+    "unauthRoleArn": {
+        "Fn::GetAtt": [
+            "UnauthRole",
+            "Arn"
+        ]
+    },
+    "useDefault": "default",
+    "usernameAttributes": [
+        "email"
+    ]
+}

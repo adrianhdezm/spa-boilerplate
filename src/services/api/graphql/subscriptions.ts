@@ -6,6 +6,7 @@ export const onCreateEntity = `subscription OnCreateEntity {
     id
     name
     description
+    tags
   }
 }
 `;
@@ -14,6 +15,7 @@ export const onUpdateEntity = `subscription OnUpdateEntity {
     id
     name
     description
+    tags
   }
 }
 `;
@@ -22,6 +24,7 @@ export const onDeleteEntity = `subscription OnDeleteEntity {
     id
     name
     description
+    tags
   }
 }
 `;

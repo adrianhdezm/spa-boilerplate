@@ -6,6 +6,7 @@ export const createEntity = `mutation CreateEntity($input: CreateEntityInput!) {
     id
     name
     description
+    tags
   }
 }
 `;
@@ -14,6 +15,7 @@ export const updateEntity = `mutation UpdateEntity($input: UpdateEntityInput!) {
     id
     name
     description
+    tags
   }
 }
 `;
@@ -22,6 +24,7 @@ export const deleteEntity = `mutation DeleteEntity($input: DeleteEntityInput!) {
     id
     name
     description
+    tags
   }
 }
 `;

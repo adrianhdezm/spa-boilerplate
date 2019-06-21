@@ -40,7 +40,8 @@ const EntityCreateView: React.FC<RouteComponentProps<{}>> = ({ history }) => {
 
   const initialValues: IEntityAttributes = {
     name: '',
-    description: ''
+    description: '',
+    tags: []
   };
 
   return (

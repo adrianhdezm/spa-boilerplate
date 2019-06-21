@@ -1,0 +1,19 @@
+{
+    "develop": {
+        "awscloudformation": {
+            "AuthRoleName": "spa-boilerplate-develop-20190621231855-authRole",
+            "UnauthRoleArn": "arn:aws:iam::734913741073:role/spa-boilerplate-develop-20190621231855-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::734913741073:role/spa-boilerplate-develop-20190621231855-authRole",
+            "Region": "eu-central-1",
+            "DeploymentBucketName": "spa-boilerplate-develop-20190621231855-deployment",
+            "UnauthRoleName": "spa-boilerplate-develop-20190621231855-unauthRole",
+            "StackName": "spa-boilerplate-develop-20190621231855",
+            "StackId": "arn:aws:cloudformation:eu-central-1:734913741073:stack/spa-boilerplate-develop-20190621231855/2d6ad0d0-946a-11e9-a5f9-0269f2d0f086"
+        },
+        "categories": {
+            "auth": {
+                "spaboilerplate906117dc": {}
+            }
+        }
+    }
+}

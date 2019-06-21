@@ -6,6 +6,7 @@ export const getEntity = `query GetEntity($id: ID!) {
     id
     name
     description
+    tags
   }
 }
 `;
@@ -19,6 +20,7 @@ export const listEntitys = `query ListEntitys(
       id
       name
       description
+      tags
     }
     nextToken
   }
