@@ -3,13 +3,7 @@ import { from, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { ofType } from 'ts-action-operators';
 
-import {
-  createEntity,
-  deleteEntity,
-  listEntities,
-  readEntity,
-  updateEntity
-} from '@app/services/api/entities';
+import { createEntity, deleteEntity, listEntities, readEntity, updateEntity } from '@app/services/api/entities';
 import {
   createEntityActions,
   createEntityFailure,

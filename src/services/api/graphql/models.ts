@@ -130,33 +130,3 @@ export type ListEntitysQuery = {
     nextToken: string | null;
   } | null;
 };
-
-export type OnCreateEntitySubscription = {
-  onCreateEntity: {
-    __typename: 'Entity';
-    id: string;
-    name: string;
-    description: string | null;
-    tags: Array<string>;
-  } | null;
-};
-
-export type OnUpdateEntitySubscription = {
-  onUpdateEntity: {
-    __typename: 'Entity';
-    id: string;
-    name: string;
-    description: string | null;
-    tags: Array<string>;
-  } | null;
-};
-
-export type OnDeleteEntitySubscription = {
-  onDeleteEntity: {
-    __typename: 'Entity';
-    id: string;
-    name: string;
-    description: string | null;
-    tags: Array<string>;
-  } | null;
-};
