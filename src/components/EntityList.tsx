@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ENTITIES_BASE_PATH } from '@app/constants';
@@ -10,6 +10,8 @@ interface IEntityListProps {
   tagsFilterValue: string;
   setTagsFilterValue: (value: string) => void;
   tagsFilterOptions: string[];
+  searchTermValue: string;
+  setSearchTermValue: (value: string) => void;
 }
 
 const EntityList: React.FC<IEntityListProps> = ({
@@ -17,8 +19,12 @@ const EntityList: React.FC<IEntityListProps> = ({
   onDelete,
   tagsFilterOptions,
   tagsFilterValue,
-  setTagsFilterValue
+  setTagsFilterValue,
+  searchTermValue,
+  setSearchTermValue
 }) => {
+  const [localSearchTermValue, setLocalSearchTermValue] = useState<string>(searchTermValue);
+
   const handleDelete = (id: string) => {
     if (id) {
       onDelete(id);
@@ -27,6 +33,14 @@ const EntityList: React.FC<IEntityListProps> = ({
 
   const handleSelectOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setTagsFilterValue(event.target.value);
+  };
+
+  const handleInputOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalSearchTermValue(event.target.value);
+  };
+
+  const handleItemClickOnSearch = () => {
+    setSearchTermValue(localSearchTermValue);
   };
 
   return (
@@ -41,6 +55,13 @@ const EntityList: React.FC<IEntityListProps> = ({
             </option>
           ))}
         </select>
+      </label>
+      <label>
+        Search Entities:
+        <input type="text" value={localSearchTermValue} onChange={handleInputOnChange} />
+        <button type="button" onClick={handleItemClickOnSearch}>
+          Search
+        </button>
       </label>
       {data.map((item: IEntity, index: number) => {
         const handleItemClick = () => handleDelete(item.id);

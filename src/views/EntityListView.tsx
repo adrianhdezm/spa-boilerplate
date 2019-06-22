@@ -22,6 +22,7 @@ const EntityListView: React.FC<RouteComponentProps<{}>> = () => {
   const error = useSelector<IAppState, Error | null>((state) => state.entities.operations.mutation.error);
 
   const [tagsFilterValue, setTagsFilterValue] = useState<string>('');
+  const [searchTermValue, setSearchTermValue] = useState<string>('');
 
   const handleDelete = (id: string) => {
     dispatch(deleteEntityStart({ id }));
@@ -38,12 +39,12 @@ const EntityListView: React.FC<RouteComponentProps<{}>> = () => {
   }, [itemWasDeleted]);
 
   useEffect(() => {
-    dispatch(listEntitiesStart({ tagFilter: tagsFilterValue }));
+    dispatch(listEntitiesStart({ tagFilter: tagsFilterValue, searchTerm: searchTermValue }));
 
     return () => {
       dispatch(listEntitiesReset());
     };
-  }, [tagsFilterValue]);
+  }, [tagsFilterValue, searchTermValue]);
 
   const tags = ['', 'project', 'other-project'];
 
@@ -56,6 +57,8 @@ const EntityListView: React.FC<RouteComponentProps<{}>> = () => {
           tagsFilterValue={tagsFilterValue}
           setTagsFilterValue={setTagsFilterValue}
           tagsFilterOptions={tags}
+          searchTermValue={searchTermValue}
+          setSearchTermValue={setSearchTermValue}
         />
       ) : null}
     </PageLayout>

@@ -105,17 +105,43 @@ export const readEntity = async (id: string) => {
   }
 };
 
-export const listEntities = async (tagFilter: string) => {
-  try {
-    const queryVariables =
-      tagFilter === ''
-        ? {}
-        : {
-            filter: {
-              tags: { contains: tagFilter }
-            }
-          };
+const maptoQueryVariables = (tagFilterValue: string, searchTermValue: string) => {
+  const tagFilter =
+    tagFilterValue === ''
+      ? {}
+      : {
+          tags: { contains: tagFilterValue }
+        };
 
+  const searchFilter =
+    searchTermValue === ''
+      ? {}
+      : {
+          or: [
+            { name: { contains: searchTermValue } },
+            {
+              description: {
+                contains: searchTermValue
+              }
+            }
+          ]
+        };
+
+  const queryVariablesFilter = { ...tagFilter, ...searchFilter };
+
+  const queryVariables =
+    Object.keys(queryVariablesFilter).length === 0
+      ? {}
+      : {
+          filter: queryVariablesFilter
+        };
+
+  return queryVariables;
+};
+
+export const listEntities = async (tagFilterValue: string, searchTermValue: string) => {
+  try {
+    const queryVariables = maptoQueryVariables(tagFilterValue, searchTermValue);
     const { query, variables } = graphqlOperation(queries.listEntitys, queryVariables);
     const hasValidQuery = query && API.getGraphqlOperationType(query) === 'query';
     if (hasValidQuery) {

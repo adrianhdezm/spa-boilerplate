@@ -3,7 +3,13 @@ import { from, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { ofType } from 'ts-action-operators';
 
-import { createEntity, deleteEntity, listEntities, readEntity, updateEntity } from '@app/services/api/entities';
+import {
+  createEntity,
+  deleteEntity,
+  listEntities,
+  readEntity,
+  updateEntity
+} from '@app/services/api/entities';
 import {
   createEntityActions,
   createEntityFailure,
@@ -88,8 +94,8 @@ const listEntitiesEpic: Epic<typeof listEntitiesActions, typeof listEntitiesActi
   actions$.pipe(
     ofType(listEntitiesStart),
     mergeMap((action) => {
-      const { tagFilter } = action.payload;
-      return from(listEntities(tagFilter)).pipe(
+      const { tagFilter, searchTerm } = action.payload;
+      return from(listEntities(tagFilter, searchTerm)).pipe(
         map((entities) => listEntitiesSuccess({ entities })),
         catchError((error) => of(listEntitiesFailure({ error })))
       );

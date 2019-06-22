@@ -41,7 +41,7 @@ export const readEntityFailure = action('READ_ENTITY_FAILURE', payload<{ error: 
 export const readEntityReset = action('READ_ENTITY_RESET');
 export const readEntityActions = union(readEntityStart, readEntitySuccess, readEntityFailure, readEntityReset);
 
-export const listEntitiesStart = action('LIST_ENTITIES_START', payload<{ tagFilter: string }>());
+export const listEntitiesStart = action('LIST_ENTITIES_START', payload<{ tagFilter: string, searchTerm: string }>());
 export const listEntitiesSuccess = action('LIST_ENTITIES_SUCCESS', payload<{ entities: IEntity[] }>());
 export const listEntitiesFailure = action('LIST_ENTITIES_FAILURE', payload<{ error: Error }>());
 export const listEntitiesReset = action('LIST_ENTITY_RESET');
