@@ -1,4 +1,4 @@
-type Entity @model {
+type Entity @model(subscriptions: null) {
   id: ID!
   name: String!
   description: String
