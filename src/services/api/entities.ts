@@ -30,7 +30,7 @@ export const createEntity = async (attrs: IEntityAttributes) => {
       const response = await API.graphql({ query, variables });
       const { errors, data } = response as GraphQLResult;
       const entity = (data as CreateEntityMutation).createEntity;
-      
+
       if (!entity || (errors && errors.length > 0)) {
         throw new Error('Response Error');
       }
@@ -105,9 +105,18 @@ export const readEntity = async (id: string) => {
   }
 };
 
-export const listEntities = async () => {
+export const listEntities = async (tagFilter: string) => {
   try {
-    const { query, variables } = graphqlOperation(queries.listEntitys);
+    const queryVariables =
+      tagFilter === ''
+        ? {}
+        : {
+            filter: {
+              tags: { contains: tagFilter }
+            }
+          };
+
+    const { query, variables } = graphqlOperation(queries.listEntitys, queryVariables);
     const hasValidQuery = query && API.getGraphqlOperationType(query) === 'query';
     if (hasValidQuery) {
       const response = await API.graphql({ query, variables });

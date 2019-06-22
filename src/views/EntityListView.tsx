@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -21,6 +21,8 @@ const EntityListView: React.FC<RouteComponentProps<{}>> = () => {
   const itemWasDeleted = useSelector<IAppState, boolean>((state) => state.entities.operations.mutation.completed);
   const error = useSelector<IAppState, Error | null>((state) => state.entities.operations.mutation.error);
 
+  const [tagsFilterValue, setTagsFilterValue] = useState<string>('');
+
   const handleDelete = (id: string) => {
     dispatch(deleteEntityStart({ id }));
   };
@@ -36,15 +38,27 @@ const EntityListView: React.FC<RouteComponentProps<{}>> = () => {
   }, [itemWasDeleted]);
 
   useEffect(() => {
-    dispatch(listEntitiesStart());
+    dispatch(listEntitiesStart({ tagFilter: tagsFilterValue }));
 
     return () => {
       dispatch(listEntitiesReset());
     };
-  }, []);
+  }, [tagsFilterValue]);
+
+  const tags = ['', 'project', 'other-project'];
 
   return (
-    <PageLayout loading={isLoading}>{data ? <EntityList data={data} onDelete={handleDelete} /> : null}</PageLayout>
+    <PageLayout loading={isLoading}>
+      {data ? (
+        <EntityList
+          data={data}
+          onDelete={handleDelete}
+          tagsFilterValue={tagsFilterValue}
+          setTagsFilterValue={setTagsFilterValue}
+          tagsFilterOptions={tags}
+        />
+      ) : null}
+    </PageLayout>
   );
 };
 

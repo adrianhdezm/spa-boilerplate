@@ -22,7 +22,8 @@
     ],
     "object-literal-key-quotes": [true, "consistent"],
     "no-console": false,
-    "object-literal-sort-keys": false
+    "object-literal-sort-keys": false,
+    "jsx-no-multiline-js": false
   },
   "rulesDirectory": [],
   "linterOptions": {

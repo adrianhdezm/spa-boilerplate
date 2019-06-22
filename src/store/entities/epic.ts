@@ -87,8 +87,9 @@ const deleteEntityEpic: Epic<typeof deleteEntityActions, typeof deleteEntityActi
 const listEntitiesEpic: Epic<typeof listEntitiesActions, typeof listEntitiesActions, IAppState> = (actions$) =>
   actions$.pipe(
     ofType(listEntitiesStart),
-    mergeMap(() => {
-      return from(listEntities()).pipe(
+    mergeMap((action) => {
+      const { tagFilter } = action.payload;
+      return from(listEntities(tagFilter)).pipe(
         map((entities) => listEntitiesSuccess({ entities })),
         catchError((error) => of(listEntitiesFailure({ error })))
       );

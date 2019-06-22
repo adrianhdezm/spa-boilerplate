@@ -55,7 +55,6 @@ const EntityUpdateView: React.FC<RouteComponentProps<{ id: string }>> = ({ match
     return values;
   };
 
-  /* tslint:disable:jsx-no-multiline-js */
   return (
     <PageLayout loading={isLoading}>
       {data ? (
